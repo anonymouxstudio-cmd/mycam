@@ -1,0 +1,14 @@
+{
+  "name": "anonymoux-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Realtime video editing UI backed by fal.ai's Decart Lucy 2.5 realtime model",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "node-fetch": "^2.7.0"
+  }
+}
