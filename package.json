@@ -2,7 +2,7 @@
   "name": "anonymoux-studio",
   "version": "1.0.0",
   "private": true,
-  "description": "Anonymoux Studio - Lucy 2.5 realtime",
+  "description": "Anonymoux Studio - Lucy 2.5 realtime video editor",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -11,8 +11,9 @@
     "node": ">=18"
   },
   "dependencies": {
+    "@fal-ai/client": "^1.9.0",
     "dotenv": "^16.6.1",
-    "express": "^5.1.0",
-    "ws": "^8.18.3"
+    "express": "^4.21.2",
+    "node-fetch": "^2.7.0"
   }
 }
