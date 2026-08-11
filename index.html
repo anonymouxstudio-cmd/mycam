@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#08090c"
+  >
+
+  <title>Anonymoux Studio</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #08090c;
+      --panel: #101218;
+      --panel2: #151821;
+      --border: #252936;
+      --text: #f4f5f7;
+      --muted: #8c93a3;
+      --accent: #8b5cf6;
+      --accent2: #a78bfa;
+      --danger: #ef4444;
+      --success: #22c55e;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    button,
+    textarea,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      height: 64px;
+      padding: 0 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8, 9, 12, .96);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(
+        135deg,
+        var(--accent),
+        #5b21b6
+      );
+      box-shadow:
+        0 0 30px rgba(139,92,246,.25);
+    }
+
+    .brand-name {
+      font-size: 17px;
+    }
+
+    .brand-sub {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .connection {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #555b68;
+    }
+
+    .dot.live {
+      background: var(--success);
+      box-shadow:
+        0 0 12px rgba(34,197,94,.8);
+    }
+
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 1500px;
+      margin: auto;
+      padding: 22px;
+      display: grid;
+      grid-template-columns:
+        minmax(0,1fr) 380px;
+      gap: 20px;
+    }
+
+    .preview-panel {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .preview {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      min-height: 360px;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background:
+        radial-gradient(
+          circle at center,
+          #171a24 0%,
+          #0b0c10 60%
+        );
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      background: #000;
+    }
+
+    #output {
+      display: none;
+    }
+
+    .empty {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 30px;
+      pointer-events: none;
+    }
+
+    .empty-inner {
+      max-width: 420px;
+    }
+
+    .empty-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 16px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      font-size: 24px;
+    }
+
+    .empty h2 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .empty p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .preview-bar {
+      display: flex;
+      align-items: center;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel);
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .stat {
+      display: flex;
+      gap: 7px;
+      font-size: 12px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+    }
+
+    .stat-value {
+      font-weight: 700;
+    }
+
+    .panel {
+      min-width: 0;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .panel-section {
+      padding: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-section:last-child {
+      border-bottom: 0;
+    }
+
+    .section-title {
+      margin: 0 0 12px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      resize: vertical;
+      padding: 12px;
+      color: var(--text);
+      background: #0b0d12;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .prompt-help {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-weight: 750;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .primary:hover:not(:disabled) {
+      background: var(--accent2);
+    }
+
+    .danger {
+      background: rgba(239,68,68,.12);
+      color: #fca5a5;
+      border: 1px solid rgba(239,68,68,.25);
+    }
+
+    .wide {
+      width: 100%;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 14px;
+    }
+
+    .toggle-copy strong {
+      display: block;
+      font-size: 12px;
+    }
+
+    .toggle-copy span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .toggle {
+      position: relative;
+      width: 45px;
+      height: 25px;
+      flex: 0 0 auto;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: #2a2d36;
+      cursor: pointer;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 19px;
+      height: 19px;
+      left: 3px;
+      top: 3px;
+      border-radius: 50%;
+      background: #fff;
+      transition: .2s;
+    }
+
+    .toggle input:checked + .slider {
+      background: var(--accent);
+    }
+
+    .toggle input:checked + .slider::before {
+      transform: translateX(20px);
+    }
+
+    .file-wrap {
+      margin-top: 14px;
+    }
+
+    input[type=file] {
+      width: 100%;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .activity {
+      height: 210px;
+      overflow: auto;
+      border-radius: 10px;
+      background: #090a0e;
+      border: 1px solid var(--border);
+      padding: 10px;
+      font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        monospace;
+      font-size: 10px;
+      line-height: 1.7;
+      color: #aeb4c2;
+    }
+
+    @media(max-width:950px) {
+
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      .preview {
+        min-height: auto;
+      }
+
+    }
+
+    @media(max-width:600px) {
+
+      header {
+        padding: 0 14px;
+      }
+
+      main {
+        padding: 12px;
+      }
+
+      .brand-sub {
+        display: none;
+      }
+
+      .buttons {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<div class="app">
+
+  <header>
+
+    <div class="brand">
+
+      <div class="brand-mark">
+        A
+      </div>
+
+      <div>
+
+        <div class="brand-name">
+          Anonymoux Studio
+        </div>
+
+        <div class="brand-sub">
+          Lucy 2.5 Realtime
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="connection">
+
+      <span
+        id="dot"
+        class="dot"
+      ></span>
+
+      <span id="conn">
+        Offline
+      </span>
+
+    </div>
+
+  </header>
+
+  <main>
+
+    <section class="preview-panel">
+
+      <div class="preview">
+
+        <video
+          id="output"
+          autoplay
+          muted
+          playsinline
+        ></video>
+
+        <div
+          id="empty"
+          class="empty"
+        >
+
+          <div class="empty-inner">
+
+            <div class="empty-icon">
+              ◉
+            </div>
+
+            <h2>
+              Camera preview
+            </h2>
+
+            <p>
+              Start your camera, enter a prompt,
+              then apply your Lucy 2.5 transformation.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="preview-bar">
+
+        <div class="stats">
+
+          <div class="stat">
+            <span class="stat-label">
+              Status
+            </span>
+            <span
+              id="status"
+              class="stat-value"
+            >
+              Offline
+            </span>
+          </div>
+
+          <div class="stat">
+            <span class="stat-label">
+              Mode
+            </span>
+            <span
+              id="mode"
+              class="stat-value"
+            >
+              READY
+            </span>
+          </div>
+
+          <div class="stat">
+            <span class="stat-label">
+              Resolution
+            </span>
+            <span
+              id="resolution"
+              class="stat-value"
+            >
+              —
+            </span>
+          </div>
+
+          <div class="stat">
+            <span class="stat-label">
+              Latency
+            </span>
+            <span
+              id="latency"
+              class="stat-value"
+            >
+              —
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <aside class="panel">
+
+      <div class="panel-section">
+
+        <h3 class="section-title">
+          Camera
+        </h3>
+
+        <div class="buttons">
+
+          <button
+            id="start"
+            class="primary"
+          >
+            Start camera
+          </button>
+
+          <button
+            id="stop"
+            class="danger"
+            disabled
+          >
+            Stop
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="panel-section">
+
+        <h3 class="section-title">
+          AI transformation
+        </h3>
+
+        <label for="prompt">
+          Prompt
+        </label>
+
+        <textarea
+          id="prompt"
+          placeholder="Example: Turn the scene into a cinematic cyberpunk city at night."
+        ></textarea>
+
+        <div class="prompt-help">
+          Describe the visual transformation you want
+          Lucy to apply to the live camera feed.
+        </div>
+
+        <div class="toggle-row">
+
+          <div class="toggle-copy">
+
+            <strong>
+              Prompt expansion
+            </strong>
+
+            <span>
+              Let Lucy enhance the prompt.
+            </span>
+
+          </div>
+
+          <label class="toggle">
+
+            <input
+              id="expansion"
+              type="checkbox"
+              checked
+            >
+
+            <span class="slider"></span>
+
+          </label>
+
+        </div>
+
+        <div class="file-wrap">
+
+          <label for="reference">
+            Reference image
+          </label>
+
+          <input
+            id="reference"
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+          >
+
+        </div>
+
+        <button
+          id="apply"
+          class="primary wide"
+          style="margin-top:15px;"
+        >
+          Apply edit
+        </button>
+
+      </div>
+
+      <div class="panel-section">
+
+        <h3 class="section-title">
+          Activity
+        </h3>
+
+        <div
+          id="log"
+          class="activity"
+        ></div>
+
+      </div>
+
+    </aside>
+
+  </main>
+
+</div>
+
+<script type="module">
+
+  import {
+    fal
+  } from
+    "https://esm.sh/@fal-ai/client@1?bundle";
+
+  // =======================================================
+  // CONFIG
+  // =======================================================
+
+  const MODEL_ID =
+    "decart/lucy-2-5/realtime";
+
+  const TOKEN_LIFETIME =
+    120;
+
+  // =======================================================
+  // ELEMENTS
+  // =======================================================
+
+  const $ =
+    (id) =>
+      document.getElementById(id);
+
+  const output =
+    $("output");
+
+  const logBox =
+    $("log");
+
+  // =======================================================
+  // STATE
+  // =======================================================
+
+  let cameraStream =
+    null;
+
+  let realtimeConnection =
+    null;
+
+  let peerConnection =
+    null;
+
+  let pendingCandidates =
+    [];
+
+  let expansion =
+    true;
+
+  let sessionStartedAt =
+    0;
+
+  let lastPrompt =
+    "";
+
+  // =======================================================
+  // LOGGING
+  // =======================================================
+
+  function log(
+    message
+  ) {
+
+    const line =
+      document.createElement("div");
+
+    line.textContent =
+      `[${new Date().toLocaleTimeString()}] ${message}`;
+
+    logBox.appendChild(
+      line
+    );
+
+    logBox.scrollTop =
+      logBox.scrollHeight;
+
+    console.log(
+      "[Anonymoux]",
+      message
+    );
+
+  }
+
+  // =======================================================
+  // ERROR TEXT
+  // =======================================================
+
+  function errorText(
+    error
+  ) {
+
+    if (
+      error instanceof Error
+    ) {
+
+      return error.message;
+
+    }
+
+    if (
+      typeof error === "string"
+    ) {
+
+      return error;
+
+    }
+
+    try {
+
+      return JSON.stringify(
+        error
+      );
+
+    } catch {
+
+      return String(
+        error
+      );
+
+    }
+
+  }
+
+  // =======================================================
+  // STATUS
+  // =======================================================
+
+  function setStatus(
+    text,
+    live = false
+  ) {
+
+    $("status").textContent =
+      text;
+
+    $("conn").textContent =
+      text;
+
+    $("dot").classList.toggle(
+      "live",
+      live
+    );
+
+  }
+
+  // =======================================================
+  // CAMERA
+  // =======================================================
+
+  $("start").onclick =
+    async () => {
+
+      try {
+
+        log(
+          "Requesting camera permission..."
+        );
+
+        setStatus(
+          "Requesting camera…"
+        );
+
+        cameraStream =
+          await navigator
+            .mediaDevices
+            .getUserMedia({
+
+              video: {
+                width: {
+                  ideal: 1280
+                },
+
+                height: {
+                  ideal: 720
+                },
+
+                facingMode:
+                  "user"
+              },
+
+              audio: false
+
+            });
+
+        output.srcObject =
+          cameraStream;
+
+        output.style.display =
+          "block";
+
+        $("empty").style.display =
+          "none";
+
+        $("start").disabled =
+          true;
+
+        $("stop").disabled =
+          false;
+
+        $("mode").textContent =
+          "CAMERA";
+
+        const track =
+          cameraStream
+            .getVideoTracks()[0];
+
+        const settings =
+          track.getSettings();
+
+        $("resolution").textContent =
+          `${settings.width || "?"}×${
+            settings.height || "?"
+          }`;
+
+        setStatus(
+          "Ready",
+          true
+        );
+
+        log(
+          "Camera stream acquired."
+        );
+
+        log(
+          "Ready — enter a prompt and click Apply edit."
+        );
+
+      } catch (error) {
+
+        log(
+          "Camera error: " +
+          errorText(error)
+        );
+
+        setStatus(
+          "Camera error"
+        );
+
+      }
+
+    };
+
+  // =======================================================
+  // STOP
+  // =======================================================
+
+  $("stop").onclick =
+    () => {
+
+      if (
+        realtimeConnection
+      ) {
+
+        try {
+
+          realtimeConnection.close();
+
+        } catch {}
+
+        realtimeConnection =
+          null;
+
+      }
+
+      if (
+        peerConnection
+      ) {
+
+        try {
+
+          peerConnection.close();
+
+        } catch {}
+
+        peerConnection =
+          null;
+
+      }
+
+      pendingCandidates =
+        [];
+
+      if (
+        cameraStream
+      ) {
+
+        cameraStream
+          .getTracks()
+          .forEach(
+            track => {
+
+              try {
+
+                track.stop();
+
+              } catch {}
+
+            }
+          );
+
+        cameraStream =
+          null;
+
+      }
+
+      output.srcObject =
+        null;
+
+      output.style.display =
+        "none";
+
+      $("empty").style.display =
+        "grid";
+
+      $("start").disabled =
+        false;
+
+      $("stop").disabled =
+        true;
+
+      $("apply").disabled =
+        false;
+
+      $("mode").textContent =
+        "READY";
+
+      $("resolution").textContent =
+        "—";
+
+      $("latency").textContent =
+        "—";
+
+      setStatus(
+        "Offline"
+      );
+
+      log(
+        "Session stopped."
+      );
+
+    };
+
+  // =======================================================
+  // PROMPT EXPANSION
+  // =======================================================
+
+  $("expansion").addEventListener(
+    "change",
+    () => {
+
+      expansion =
+        $("expansion").checked;
+
+    }
+  );
+
+  // =======================================================
+  // FILE TO DATA URI
+  // =======================================================
+
+  function fileToDataURI(
+    file
+  ) {
+
+    return new Promise(
+      (resolve, reject) => {
+
+        const reader =
+          new FileReader();
+
+        reader.onload =
+          () => resolve(
+            reader.result
+          );
+
+        reader.onerror =
+          () => reject(
+            new Error(
+              "Could not read reference image."
+            )
+          );
+
+        reader.readAsDataURL(
+          file
+        );
+
+      }
+    );
+
+  }
+
+  // =======================================================
+  // CREATE WEBRTC PEER
+  // =======================================================
+  //
+  // IMPORTANT:
+  // Lucy supplies the ICE servers in its realtime result.
+  // Therefore we don't hard-code Google's STUN server.
+  // =======================================================
+
+  function createPeerConnection(
+    iceServers
+  ) {
+
+    if (
+      peerConnection
+    ) {
+
+      try {
+
+        peerConnection.close();
+
+      } catch {}
+
+    }
+
+    peerConnection =
+      new RTCPeerConnection({
+
+        iceServers:
+          Array.isArray(
+            iceServers
+          )
+            ? iceServers
+            : []
+
+      });
+
+    // -----------------------------------------------------
+    // Camera -> Lucy
+    // -----------------------------------------------------
+
+    if (
+      cameraStream
+    ) {
+
+      cameraStream
+        .getTracks()
+        .forEach(
+          track => {
+
+            peerConnection.addTrack(
+              track,
+              cameraStream
+            );
+
+          }
+        );
+
+    }
+
+    // -----------------------------------------------------
+    // Lucy -> Browser
+    // -----------------------------------------------------
+
+    peerConnection.ontrack =
+      event => {
+
+        log(
+          "Received Lucy video track."
+        );
+
+        const stream =
+          event.streams &&
+          event.streams[0];
+
+        if (!stream) {
+          return;
+        }
+
+        output.srcObject =
+          stream;
+
+        output.style.display =
+          "block";
+
+        $("empty").style.display =
+          "none";
+
+        $("mode").textContent =
+          "LIVE";
+
+        setStatus(
+          "Live",
+          true
+        );
+
+        if (
+          sessionStartedAt
+        ) {
+
+          const elapsed =
+            Math.round(
+              performance.now() -
+              sessionStartedAt
+            );
+
+          $("latency").textContent =
+            `${elapsed} ms`;
+
+        }
+
+        output
+          .play()
+          .catch(() => {});
+
+      };
+
+    // -----------------------------------------------------
+    // Local ICE -> Lucy
+    // -----------------------------------------------------
+
+    peerConnection.onicecandidate =
+      event => {
+
+        if (
+          !event.candidate
+        ) {
+
+          return;
+
+        }
+
+        const candidate =
+          event.candidate.toJSON
+            ? event.candidate.toJSON()
+            : event.candidate;
+
+        if (
+          realtimeConnection
+        ) {
+
+          realtimeConnection.send({
+            candidate
+          });
+
+          log(
+            "Sent local ICE candidate."
+          );
+
+        } else {
+
+          pendingCandidates.push(
+            candidate
+          );
+
+        }
+
+      };
+
+    // -----------------------------------------------------
+    // Connection state
+    // -----------------------------------------------------
+
+    peerConnection
+      .onconnectionstatechange =
+      () => {
+
+        const state =
+          peerConnection
+            .connectionState;
+
+        log(
+          `WebRTC connection: ${state}`
+        );
+
+        if (
+          state === "connected"
+        ) {
+
+          setStatus(
+            "Live",
+            true
+          );
+
+        } else if (
+          state === "connecting"
+        ) {
+
+          setStatus(
+            "Connecting…"
+          );
+
+        } else if (
+          state === "disconnected"
+        ) {
+
+          setStatus(
+            "WebRTC disconnected"
+          );
+
+        } else if (
+          state === "failed"
+        ) {
+
+          setStatus(
+            "WebRTC failed"
+          );
+
+        } else if (
+          state === "closed"
+        ) {
+
+          setStatus(
+            "Offline"
+          );
+
+        }
+
+      };
+
+    // -----------------------------------------------------
+    // ICE state
+    // -----------------------------------------------------
+
+    peerConnection
+      .oniceconnectionstatechange =
+      () => {
+
+        log(
+          `ICE state: ${
+            peerConnection
+              .iceConnectionState
+          }`
+        );
+
+      };
+
+    return peerConnection;
+
+  }
+
+  // =======================================================
+  // HANDLE LOCAL CANDIDATES THAT WERE QUEUED
+  // =======================================================
+
+  function flushPendingCandidates() {
+
+    if (
+      !realtimeConnection
+    ) {
+
+      return;
+
+    }
+
+    while (
+      pendingCandidates.length
+    ) {
+
+      const candidate =
+        pendingCandidates.shift();
+
+      realtimeConnection.send({
+        candidate
+      });
+
+      log(
+        "Sent queued ICE candidate."
+      );
+
+    }
+
+  }
+
+  // =======================================================
+  // HANDLE LUCY REALTIME RESULT
+  // =======================================================
+
+  async function handleLucyResult(
+    result
+  ) {
+
+    console.log(
+      "Lucy realtime result:",
+      result
+    );
+
+    if (!result) {
+      return;
+    }
+
+    // -----------------------------------------------------
+    // Error
+    // -----------------------------------------------------
+
+    if (
+      result.error
+    ) {
+
+      log(
+        "Lucy error: " +
+        errorText(
+          result.error
+        )
+      );
+
+      setStatus(
+        "Lucy error"
+      );
+
+      return;
+
+    }
+
+    try {
+
+      // ---------------------------------------------------
+      // ICE servers
+      // ---------------------------------------------------
+
+      if (
+        result.iceServers &&
+        !peerConnection
+      ) {
+
+        log(
+          "Received Lucy ICE server configuration."
+        );
+
+        createPeerConnection(
+          result.iceServers
+        );
+
+      }
+
+      // ---------------------------------------------------
+      // SDP
+      // ---------------------------------------------------
+
+      if (
+        result.sdp &&
+        result.type
+      ) {
+
+        if (
+          !peerConnection
+        ) {
+
+          createPeerConnection(
+            result.iceServers || []
+          );
+
+        }
+
+        log(
+          `Received remote SDP: ${result.type}`
+        );
+
+        await peerConnection
+          .setRemoteDescription({
+
+            type:
+              result.type,
+
+            sdp:
+              result.sdp
+
+          });
+
+        // -------------------------------------------------
+        // Lucy normally sends an offer.
+        // Browser answers it.
+        // -------------------------------------------------
+
+        if (
+          result.type ===
+          "offer"
+        ) {
+
+          const answer =
+            await peerConnection
+              .createAnswer();
+
+          await peerConnection
+            .setLocalDescription(
+              answer
+            );
+
+          realtimeConnection.send({
+
+            type:
+              "answer",
+
+            sdp:
+              answer.sdp
+
+          });
+
+          log(
+            "Sent WebRTC SDP answer."
+          );
+
+        }
+
+      }
+
+      // ---------------------------------------------------
+      // Remote ICE
+      // ---------------------------------------------------
+
+      if (
+        result.candidate
+      ) {
+
+        if (
+          !peerConnection
+        ) {
+
+          log(
+            "Remote ICE arrived before peer was ready."
+          );
+
+        } else {
+
+          await peerConnection
+            .addIceCandidate(
+              result.candidate
+            );
+
+          log(
+            "Added remote ICE candidate."
+          );
+
+        }
+
+      }
+
+    } catch (error) {
+
+      console.error(
+        "Lucy result handling error:",
+        error
+      );
+
+      log(
+        "WebRTC signaling error: " +
+        errorText(error)
+      );
+
+      setStatus(
+        "WebRTC error"
+      );
+
+    }
+
+  }
+
+  // =======================================================
+  // CONNECT TO LUCY
+  // =======================================================
+
+  function connectLucy() {
+
+    if (
+      realtimeConnection
+    ) {
+
+      return realtimeConnection;
+
+    }
+
+    log(
+      "Opening realtime session with Lucy 2.5…"
+    );
+
+    realtimeConnection =
+      fal.realtime.connect(
+        MODEL_ID,
+        {
+
+          // -------------------------------------------------
+          // Short-lived authentication
+          // -------------------------------------------------
+
+          tokenProvider:
+            async app => {
+
+              log(
+                "Requesting temporary realtime token..."
+              );
+
+              const response =
+                await fetch(
+                  "/api/fal/realtime-token",
+                  {
+
+                    method:
+                      "POST",
+
+                    headers: {
+                      "Content-Type":
+                        "application/json"
+                    },
+
+                    body:
+                      JSON.stringify({
+                        app
+                      })
+
+                  }
+                );
+
+              if (
+                !response.ok
+              ) {
+
+                const body =
+                  await response.text();
+
+                throw new Error(
+                  `Token request failed (${response.status}): ${body}`
+                );
+
+              }
+
+              const token =
+                await response.text();
+
+              if (
+                !token
+              ) {
+
+                throw new Error(
+                  "Backend returned an empty realtime token."
+                );
+
+              }
+
+              log(
+                "Temporary realtime token received."
+              );
+
+              return token;
+
+            },
+
+          tokenExpirationSeconds:
+            TOKEN_LIFETIME,
+
+          // -------------------------------------------------
+          // Result
+          // -------------------------------------------------
+
+          onResult:
+            handleLucyResult,
+
+          // -------------------------------------------------
+          // Error
+          // -------------------------------------------------
+
+          onError:
+            error => {
+
+              console.error(
+                "Lucy realtime error:",
+                error
+              );
+
+              log(
+                "Realtime error: " +
+                errorText(error)
+              );
+
+              setStatus(
+                "Realtime error"
+              );
+
+            }
+
+        }
+      );
+
+    log(
+      "Lucy realtime connection created."
+    );
+
+    flushPendingCandidates();
+
+    return realtimeConnection;
+
+  }
+
+  // =======================================================
+  // APPLY EDIT
+  // =======================================================
+
+  $("apply").onclick =
+    async () => {
+
+      if (
+        !cameraStream
+      ) {
+
+        log(
+          "Start the camera first."
+        );
+
+        return;
+
+      }
+
+      const prompt =
+        $("prompt")
+          .value
+          .trim();
+
+      if (
+        !prompt
+      ) {
+
+        log(
+          "Enter a prompt first."
+        );
+
+        $("prompt").focus();
+
+        return;
+
+      }
+
+      lastPrompt =
+        prompt;
+
+      $("apply").disabled =
+        true;
+
+      $("mode").textContent =
+        "CONNECTING";
+
+      setStatus(
+        "Connecting…"
+      );
+
+      sessionStartedAt =
+        performance.now();
+
+      try {
+
+        // -------------------------------------------------
+        // Connect to fal/Lucy.
+        // -------------------------------------------------
+
+        const connection =
+          connectLucy();
+
+        // -------------------------------------------------
+        // Reference image
+        // -------------------------------------------------
+
+        let referenceImage =
+          null;
+
+        const file =
+          $("reference")
+            .files[0];
+
+        if (
+          file
+        ) {
+
+          log(
+            "Reading reference image..."
+          );
+
+          referenceImage =
+            await fileToDataURI(
+              file
+            );
+
+          log(
+            "Reference image ready."
+          );
+
+        }
+
+        // -------------------------------------------------
+        // Send prompt.
+        //
+        // Lucy's realtime endpoint then returns the
+        // WebRTC signaling information.
+        // -------------------------------------------------
+
+        const payload = {
+
+          prompt,
+
+          enable_prompt_expansion:
+            expansion
+
+        };
+
+        if (
+          referenceImage
+        ) {
+
+          payload.reference_image_url =
+            referenceImage;
+
+        }
+
+        log(
+          "Sending Lucy edit request..."
+        );
+
+        connection.send(
+          payload
+        );
+
+        log(
+          "Lucy edit request sent."
+        );
+
+        $("mode").textContent =
+          "PROCESSING";
+
+        setStatus(
+          "Processing…"
+        );
+
+        // If ICE candidates were generated immediately,
+        // make sure they are sent.
+        flushPendingCandidates();
+
+      } catch (error) {
+
+        console.error(
+          "Apply edit error:",
+          error
+        );
+
+        log(
+          "Request failed: " +
+          errorText(error)
+        );
+
+        setStatus(
+          "Request failed"
+        );
+
+        $("mode").textContent =
+          "ERROR";
+
+      } finally {
+
+        $("apply").disabled =
+          false;
+
+      }
+
+    };
+
+  // =======================================================
+  // STARTUP
+  // =======================================================
+
+  log(
+    "Anonymoux Studio initialized."
+  );
+
+  log(
+    "Lucy 2.5 realtime engine ready."
+  );
+
+  log(
+    "Short-lived server authentication enabled."
+  );
+
+  log(
+    "Waiting for camera..."
+  );
+
+</script>
+
+</body>
+
+</html>
